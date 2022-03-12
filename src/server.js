@@ -1,7 +1,7 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const { main } = require("./../lib/mongodb.js");
-const PORT = 8080;
+const port = 8080;
 const io = require("socket.io")(http);
 
 app.get("/", async (req, res) => {
@@ -57,7 +57,7 @@ io.on("connection", async function (socket) {
   });
 });
 
-http.listen(process.env.PORT || PORT, async () => {
-  console.log(`Listening on port ${PORT}`);
+http.listen(process.env.PORT || port, async () => {
+  console.log(`Listening on port ${process.env.PORT || port}`);
   connectToDatabase();
 });
