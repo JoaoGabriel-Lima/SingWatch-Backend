@@ -33,10 +33,8 @@ async function dbTrack() {
 }
 
 async function setNewData() {
-  const datasend = await db.collection("discord").find({}).toArray();
-  if (datasend) {
-    io.local.emit("setNewData", datasend);
-  }
+  data = await db.collection("discord").find({}).toArray();
+  io.local.emit("setNewData", data);
 }
 
 // ! Pegar o ultimo update do dados do banco de dados e enviar para o cliente - Amanhã
