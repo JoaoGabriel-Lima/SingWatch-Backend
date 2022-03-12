@@ -49,7 +49,6 @@ io.on("connection", async function (socket) {
 
   // if dataRequested == false, make function only imit data when db is ready
   let data = await getInitialData();
-  console.log(data[2].channels[0]);
   socket.emit("previusData", data);
   //Whenever someone disconnects this piece of code executed
   socket.on("disconnect", function () {
