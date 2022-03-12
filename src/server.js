@@ -1,6 +1,6 @@
 const app = require("express")();
 const http = require("http").Server(app);
-import main from "../lib/mongodb";
+const { main } = require("./../lib/mongodb.js");
 const PORT = 8080;
 const io = require("socket.io")(http);
 
