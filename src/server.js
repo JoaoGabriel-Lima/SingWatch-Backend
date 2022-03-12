@@ -10,6 +10,7 @@ app.get("/", async (req, res) => {
 
 var dataRequested = false;
 let db;
+let data;
 async function connectToDatabase() {
   if (db != undefined) {
     return db;
@@ -36,10 +37,12 @@ async function setNewData() {
   io.local.emit("setNewData", data);
 }
 
+// ! Pegar o ultimo update do dados do banco de dados e enviar para o cliente - Amanhã
+
 async function getInitialData() {
   await connectToDatabase();
 
-  const data = await db.collection("discord").find({}).toArray();
+  data = await db.collection("discord").find({}).toArray();
   if (data) {
     return data;
   }
@@ -48,8 +51,12 @@ io.on("connection", async function (socket) {
   console.log("A user connected: " + socket.id);
 
   // if dataRequested == false, make function only imit data when db is ready
-  let data = await getInitialData();
-  socket.emit("previusData", data);
+  if (data == undefined) {
+    data = await getInitialData();
+    socket.emit("previusData", data);
+  } else {
+    socket.emit("previusData", data);
+  }
   //Whenever someone disconnects this piece of code executed
   socket.on("disconnect", function () {
     console.log("A user disconnected");
