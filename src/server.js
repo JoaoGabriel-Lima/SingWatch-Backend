@@ -57,7 +57,7 @@ io.on("connection", async function (socket) {
   });
 });
 
-http.listen(PORT, async () => {
+http.listen(process.env.PORT || PORT, async () => {
   console.log(`Listening on port ${PORT}`);
   connectToDatabase();
 });
