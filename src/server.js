@@ -10,7 +10,6 @@ app.get("/", async (req, res) => {
 
 var dataRequested = false;
 let db;
-var data;
 async function connectToDatabase() {
   if (db != undefined) {
     return db;
@@ -33,7 +32,7 @@ async function dbTrack() {
 }
 
 async function setNewData() {
-  data = await db.collection("discord").find({}).toArray();
+  const data = await getInitialData();
   io.local.emit("setNewData", data);
 }
 
@@ -42,11 +41,7 @@ async function setNewData() {
 async function getInitialData() {
   await connectToDatabase();
 
-  if (data !== undefined) {
-    return data;
-  }
-
-  data = await db.collection("discord").find({}).toArray();
+  const data = await db.collection("discord").find({}).toArray();
   if (data) {
     return data;
   }
