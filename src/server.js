@@ -10,6 +10,7 @@ app.get("/", async (req, res) => {
 
 var dataRequested = false;
 let db;
+var data;
 async function connectToDatabase() {
   if (db != undefined) {
     return db;
@@ -17,6 +18,7 @@ async function connectToDatabase() {
   if (dataRequested == false) {
     dataRequested = true;
     db = await main();
+    console.log("DB has been connected 💖");
     dbTrack();
   } else {
     await new Promise((resolve) => setTimeout(resolve, 400));
@@ -32,8 +34,13 @@ async function dbTrack() {
 }
 
 async function setNewData() {
-  const data = await getInitialData();
-  io.local.emit("setNewData", data);
+  data = await getInitialData();
+  if (data != undefined) {
+    console.log("a user request a existing data");
+    io.local.emit("setNewData", data);
+  } else {
+    console.log("Data is not ready yet New Data");
+  }
 }
 
 // ! Pegar o ultimo update do dados do banco de dados e enviar para o cliente - Amanhã
@@ -50,8 +57,15 @@ io.on("connection", async function (socket) {
   console.log("A user connected: " + socket.id);
 
   // if dataRequested == false, make function only imit data when db is ready
-  let data = await getInitialData();
-  socket.emit("previusData", data);
+
+  if (data != undefined) {
+    console.log("a user request a existing data");
+    socket.emit("previusData", data);
+  } else {
+    console.log("Data is not ready yet");
+    data = await getInitialData();
+    socket.emit("previusData", data);
+  }
   //Whenever someone disconnects this piece of code executed
   socket.on("disconnect", function () {
     console.log("A user disconnected");
